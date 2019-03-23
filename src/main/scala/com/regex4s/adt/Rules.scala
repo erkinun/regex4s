@@ -8,3 +8,7 @@ sealed trait Rule {
 case object AnySingle extends Rule {
   override def pattern: Regex = ".".r
 }
+
+case object AnyDigit extends Rule {
+  override def pattern: Regex = "\\d".r
+}
