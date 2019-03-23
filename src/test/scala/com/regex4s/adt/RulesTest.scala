@@ -4,10 +4,10 @@ import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import org.scalatest.{FlatSpec, Matchers}
 
 class RulesTest extends FlatSpec with Matchers with GeneratorDrivenPropertyChecks {
-  "AnyCharacter pattern" should "match any arbitrary characters" in {
+  "Wildcard pattern" should "match any arbitrary characters" in {
     forAll("strings") { aStr: String =>
       whenever(aStr.nonEmpty) {
-        AnyCharacter.pattern.findFirstIn(aStr) shouldBe Some(aStr.head.toString)
+        Wildcard.pattern.findFirstIn(aStr) shouldBe Some(aStr.head.toString)
       }
     }
   }
