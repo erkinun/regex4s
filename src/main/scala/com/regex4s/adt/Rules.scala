@@ -12,3 +12,7 @@ case object AnyCharacter extends Rule {
 case object AnyDigit extends Rule {
   override def pattern: Regex = "\\d".r
 }
+
+case object AnyNonDigit extends Rule {
+  override def pattern: Regex = "\\D".r
+}
