@@ -16,3 +16,7 @@ case object AnyDigit extends Rule {
 case object AnyNonDigit extends Rule {
   override def pattern: Regex = "\\D".r
 }
+
+case class Only(these: String) extends Rule {
+  override def pattern: Regex = s"[$these]".r
+}
