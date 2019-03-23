@@ -1,5 +1,6 @@
 package com.regex4s.adt
 
+import org.scalacheck.Gen
 import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import org.scalatest.{FlatSpec, Matchers}
 
@@ -35,10 +36,12 @@ class RulesTest extends FlatSpec with Matchers with GeneratorDrivenPropertyCheck
 
   "Only" should "match only the characters it has" in {
     val onlyAbc = Only("abc")
-
-    onlyAbc.pattern.findFirstIn("any") shouldBe Some("a")
-    onlyAbc.pattern.findFirstIn("car") shouldBe Some("c")
-    onlyAbc.pattern.findFirstIn("bus") shouldBe Some("b")
+    val abcGen = Gen.listOf(Gen.oneOf("a", "b", "c")).flatMap(_.mkString(""))
+    forAll(abcGen) { abc: String =>
+      whenever(abc.nonEmpty) {
+        onlyAbc.pattern.findFirstIn(abc) shouldBe Some(abc.firstChar)
+      }
+    }
   }
 
   it should "not match other characters than specified" in {
