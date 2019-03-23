@@ -5,7 +5,7 @@ import scala.util.matching.Regex
 sealed trait Rule {
   def pattern: Regex
 }
-case object AnySingle extends Rule {
+case object AnyCharacter extends Rule {
   override def pattern: Regex = ".".r
 }
 

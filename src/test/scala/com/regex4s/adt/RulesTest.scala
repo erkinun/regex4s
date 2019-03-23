@@ -4,8 +4,8 @@ import org.scalatest.prop.GeneratorDrivenPropertyChecks
 import org.scalatest.{FlatSpec, Matchers}
 
 class RulesTest extends FlatSpec with Matchers with GeneratorDrivenPropertyChecks {
-  "AnySingle rule" should "match any arbitrary characters" in {
-    val r = AnySingle.pattern
+  "AnyCharacter pattern" should "match any arbitrary characters" in {
+    val r = AnyCharacter.pattern
 
     forAll("strings") { aStr: String =>
       whenever(aStr.nonEmpty) {
@@ -14,7 +14,7 @@ class RulesTest extends FlatSpec with Matchers with GeneratorDrivenPropertyCheck
     }
   }
 
-  "AnyDigit rule" should "match any digit" in {
+  "AnyDigit pattern" should "match any digit" in {
     val r = AnyDigit.pattern
     forAll("integers") { number: Int =>
       val numStr = number.toString
