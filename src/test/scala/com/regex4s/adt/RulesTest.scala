@@ -96,6 +96,23 @@ class RulesTest extends FlatSpec with Matchers with GeneratorDrivenPropertyCheck
   }
 
   // negative range TODO refactor Not rule
+  "NegativeRange" should "match anything except it specifies as range" in {
+    val negRange = NegativeRange(Range('d', 'z'))
+
+    forAll(abcGen) { abc =>
+      negRange.matches(abc) shouldBe true
+    }
+  }
+
+  it should "not match a pattern it specifies" in {
+    val negRange = NegativeRange('a' -> 'c')
+
+    forAll(abcGen) { abc =>
+      negRange.matches(abc) shouldBe false
+    }
+  }
+
+  // TODO negative multiple range test
 
   implicit class StringFirstChar(s: String) {
     def firstChar: String = s.head.toString
