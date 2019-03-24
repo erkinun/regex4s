@@ -27,10 +27,21 @@ case class Not(these: String) extends Rule {
 
 case class Range(start: Char, end: Char)
 
-case class RangeMatch(range: Range) extends Rule {
-  override def pattern: Regex = s"[${range.start}-${range.end}]".r
+case class RangeMatch(ranges: Range*) extends Rule {
+  override def pattern: Regex = s"[$rangeText]".r
+  private def rangeText = ranges.map(r => s"${r.start}-${r.end}").mkString("")
 }
 
+// TODO maybe we can have abnormal range checks?
+// like z -> 5, 2 -> a, b->a
 object RangeMatch {
-  def apply(rangeTuple: (Char, Char)): RangeMatch = RangeMatch(Range(rangeTuple._1, rangeTuple._2))
+  // DummyImplicit is to prevent same types after type erasure
+  def apply(tps: (Char, Char)*)(implicit d: DummyImplicit): RangeMatch = {
+    val ranges = tps.map(tp => Range(tp))
+    RangeMatch(ranges:_*)
+  }
+}
+
+object Range {
+  def apply(tp: (Char, Char)): Range = new Range(tp._1, tp._2)
 }

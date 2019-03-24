@@ -69,11 +69,33 @@ class RulesTest extends FlatSpec with Matchers with GeneratorDrivenPropertyCheck
       rangeMatch.matches(str) shouldBe true
     }
   }
-  // not matching test
 
-  // multiple ranges test
+  it should "not match ranges outside it represent" in {
+    val rangeMatch = RangeMatch('d' -> 'z')
 
-  // range negative TODO refactor Not rule
+    forAll(abcGen) { abc =>
+      rangeMatch.matches(abc) shouldBe false
+    }
+  }
+
+  it should "match numeric ranges" in {
+    val rangeMatch = RangeMatch('0' -> '9')
+    forAll(Gen.numStr.filter(_.nonEmpty)) { numStr =>
+      rangeMatch.matches(numStr) shouldBe true
+    }
+  }
+
+  it should "match multiple ranges" in {
+    val range = RangeMatch('a' -> 'c', '0' -> '3')
+    val digitGen = Gen.oneOf("0", "1", "2", "3")
+    val gen = Gen.pick(2, abcGen, digitGen).flatMap(_.mkString(""))
+
+    forAll(gen) { multi =>
+      range.matches(multi) shouldBe true
+    }
+  }
+
+  // negative range TODO refactor Not rule
 
   implicit class StringFirstChar(s: String) {
     def firstChar: String = s.head.toString
