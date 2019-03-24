@@ -63,7 +63,7 @@ class RulesTest extends FlatSpec with Matchers with GeneratorDrivenPropertyCheck
   }
 
   "RangeMatch" should "match a range of characters" in {
-    val rangeMatch = RangeMatch(Range('a', 'z'))
+    val rangeMatch = RangeMatch('a' -> 'z')
 
     forAll(Gen.alphaStr.map(_.trim).filter(_.nonEmpty)) { str: String =>
       rangeMatch.matches(str) shouldBe true

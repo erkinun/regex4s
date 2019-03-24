@@ -25,9 +25,12 @@ case class Not(these: String) extends Rule {
   override def pattern: Regex = s"[^$these]".r
 }
 
-// TODO implement implicit conversion from Tuple
-case class Range(start: Character, end: Character)
+case class Range(start: Char, end: Char)
 
 case class RangeMatch(range: Range) extends Rule {
   override def pattern: Regex = s"[${range.start}-${range.end}]".r
+}
+
+object RangeMatch {
+  def apply(rangeTuple: (Char, Char)): RangeMatch = RangeMatch(Range(rangeTuple._1, rangeTuple._2))
 }
