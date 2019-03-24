@@ -8,20 +8,16 @@ class RulesTest extends FlatSpec with Matchers with GeneratorDrivenPropertyCheck
   "Wildcard pattern" should "match any arbitrary characters" in {
     forAll("strings") { aStr: String =>
       whenever(aStr.nonEmpty) {
-        Wildcard.matches(aStr) shouldBe Some(aStr.head.toString)
+        Wildcard.matches(aStr) shouldBe true
       }
     }
   }
 
   "AnyDigit pattern" should "match any digit" in {
-    forAll("integers") { number: Int =>
-      val numStr = number.toString
-      val result = AnyDigit.matches(numStr)
-      if (number >= 0) {
-        result shouldBe Some(numStr.head.toString)
-      }
-      else {
-        result shouldBe Some(numStr.charAt(1).toString)
+    val intGen = Gen.numStr
+    forAll(intGen) { number: String =>
+      whenever(number.nonEmpty) {
+        AnyDigit.matches(number) shouldBe true
       }
     }
   }
@@ -29,7 +25,7 @@ class RulesTest extends FlatSpec with Matchers with GeneratorDrivenPropertyCheck
   "AnyNonDigit" should "match any non digit" in {
     forAll("non digits") { nonDigit: String =>
       whenever(nonDigit.nonEmpty && !nonDigit.matches(AnyDigit.pattern.toString())) {
-        AnyNonDigit.matches(nonDigit) shouldBe Some(nonDigit.firstChar)
+        AnyNonDigit.matches(nonDigit) shouldBe true
       }
     }
   }
@@ -41,7 +37,7 @@ class RulesTest extends FlatSpec with Matchers with GeneratorDrivenPropertyCheck
     val abcGen = Gen.listOf(Gen.oneOf("a", "b", "c")).flatMap(_.mkString(""))
     forAll(abcGen) { abc: String =>
       whenever(abc.nonEmpty) {
-        onlyAbc.matches(abc) shouldBe Some(abc.firstChar)
+        onlyAbc.matches(abc) shouldBe true
       }
     }
   }
@@ -49,7 +45,7 @@ class RulesTest extends FlatSpec with Matchers with GeneratorDrivenPropertyCheck
   it should "not match other characters than specified" in {
     val onlyAbc = Only("abc")
 
-    onlyAbc.matches("other") shouldBe None
+    onlyAbc.matches("other") shouldBe false
   }
 
   "Not" should "not match characters other than it specifies" in {
@@ -58,7 +54,7 @@ class RulesTest extends FlatSpec with Matchers with GeneratorDrivenPropertyCheck
 
     forAll(abcGen) { abc: String =>
       whenever(abc.nonEmpty) {
-        notAbc.matches(abc) shouldBe None
+        notAbc.matches(abc) shouldBe false
       }
     }
   }
@@ -69,16 +65,33 @@ class RulesTest extends FlatSpec with Matchers with GeneratorDrivenPropertyCheck
 
     forAll(notAbcGen) { abcExcluded: String =>
       whenever(abcExcluded.nonEmpty) {
-        notAbc.matches(abcExcluded) shouldBe Some(abcExcluded.firstChar)
+        notAbc.matches(abcExcluded) shouldBe true
       }
     }
   }
+
+  // TODO find a way to get rid of whenever check
+  "RangeMatch" should "match a range of characters" in {
+    val rangeMatch = RangeMatch(Range('a', 'z'))
+
+    forAll(Gen.alphaStr.map(_.trim)) { str: String =>
+      whenever(str.nonEmpty) {
+        rangeMatch.matches(str) shouldBe true
+      }
+    }
+  }
+  // not matching test
+
+  // multiple ranges test
+
+  // range negative TODO refactor Not rule
 
   implicit class StringFirstChar(s: String) {
     def firstChar: String = s.head.toString
   }
 
+  // TODO maybe this can return a bool?
   implicit class RuleMatchExtender(r: Rule) {
-    def matches(s: String): Option[String] = r.pattern.findFirstIn(s)
+    def matches(s: String): Boolean = r.pattern.findFirstIn(s).nonEmpty
   }
 }
