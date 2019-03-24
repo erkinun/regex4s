@@ -24,3 +24,5 @@ case class Only(these: String) extends Rule {
 case class Not(these: String) extends Rule {
   override def pattern: Regex = s"[^$these]".r
 }
+
+case class Range(start: Character, end: Character)

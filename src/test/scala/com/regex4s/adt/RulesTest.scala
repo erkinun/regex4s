@@ -63,10 +63,15 @@ class RulesTest extends FlatSpec with Matchers with GeneratorDrivenPropertyCheck
     }
   }
 
-  // TODO generator for excluding a set
   it should "match other characters" in {
     val notAbc = Not("abc")
-    notAbc.matches("other") shouldBe Some("other".firstChar)
+    val notAbcGen = Gen.alphaChar.filter(c => c != 'a' && c != 'b' && c != 'c').map(_.toString)
+
+    forAll(notAbcGen) { abcExcluded: String =>
+      whenever(abcExcluded.nonEmpty) {
+        notAbc.matches(abcExcluded) shouldBe Some(abcExcluded.firstChar)
+      }
+    }
   }
 
   implicit class StringFirstChar(s: String) {
