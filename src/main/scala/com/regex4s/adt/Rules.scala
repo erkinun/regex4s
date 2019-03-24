@@ -25,11 +25,17 @@ case class Not(these: String) extends Rule {
   override def pattern: Regex = s"[^$these]".r
 }
 
+// TODO Ranges should go to their own module
 case class Range(start: Char, end: Char)
 
 case class RangeMatch(ranges: Range*) extends Rule {
   override def pattern: Regex = s"[$rangeText]".r
-  private def rangeText = ranges.map(r => s"${r.start}-${r.end}").mkString("")
+  protected def rangeText = ranges.map(r => s"${r.start}-${r.end}").mkString("")
+}
+
+case class NegativeRange(ranges: Range*) extends Rule {
+  override def pattern: Regex = s"[^$rangeText]".r
+  protected def rangeText = ranges.map(r => s"${r.start}-${r.end}").mkString("")
 }
 
 // TODO maybe we can have abnormal range checks?
@@ -39,6 +45,14 @@ object RangeMatch {
   def apply(tps: (Char, Char)*)(implicit d: DummyImplicit): RangeMatch = {
     val ranges = tps.map(tp => Range(tp))
     RangeMatch(ranges:_*)
+  }
+}
+
+object NegativeRange {
+  // DummyImplicit is to prevent same types after type erasure
+  def apply(tps: (Char, Char)*)(implicit d: DummyImplicit): NegativeRange = {
+    val ranges = tps.map(tp => Range(tp))
+    NegativeRange(ranges:_*)
   }
 }
 
