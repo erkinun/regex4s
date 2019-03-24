@@ -20,3 +20,7 @@ case object AnyNonDigit extends Rule {
 case class Only(these: String) extends Rule {
   override def pattern: Regex = s"[$these]".r
 }
+
+case class Not(these: String) extends Rule {
+  override def pattern: Regex = s"[^$these]".r
+}

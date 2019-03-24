@@ -34,6 +34,8 @@ class RulesTest extends FlatSpec with Matchers with GeneratorDrivenPropertyCheck
     }
   }
 
+  // TODO think about escaping chars in the string cases
+  // or other cases that might fail
   "Only" should "match only the characters it has" in {
     val onlyAbc = Only("abc")
     val abcGen = Gen.listOf(Gen.oneOf("a", "b", "c")).flatMap(_.mkString(""))
@@ -48,6 +50,24 @@ class RulesTest extends FlatSpec with Matchers with GeneratorDrivenPropertyCheck
     val onlyAbc = Only("abc")
 
     onlyAbc.pattern.findFirstIn("other") shouldBe None
+  }
+
+  "Not" should "not match characters other than it specifies" in {
+    val notAbc = Not("abc")
+    val abcGen = Gen.listOf(Gen.oneOf("a", "b", "c")).flatMap(_.mkString(""))
+
+    forAll(abcGen) { abc: String =>
+      whenever(abc.nonEmpty) {
+        notAbc.pattern.findFirstIn(abc) shouldBe None
+      }
+    }
+  }
+
+  // TODO generator for excluding a set
+  // TODO a wrapper for .pattern.findFirstIn maybe?
+  it should "match other characters" in {
+    val notAbc = Not("abc")
+    notAbc.pattern.findFirstIn("other") shouldBe Some("other".firstChar)
   }
 
   implicit class StringFirstChar(s: String) {
