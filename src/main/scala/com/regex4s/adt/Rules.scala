@@ -35,6 +35,10 @@ case class NegativeRange(ranges: Range*) extends Rule {
   protected def rangeText = ranges.map(r => s"${r.start}-${r.end}").mkString("")
 }
 
+case class Repetition(these: String, times: Int) extends Rule {
+  override def pattern: Regex = s"[$these]{$times}".r
+}
+
 // TODO maybe we can have abnormal range checks?
 // like z -> 5, 2 -> a, b->a
 

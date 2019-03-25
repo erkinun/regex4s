@@ -121,6 +121,19 @@ class RulesTest extends FlatSpec with Matchers with GeneratorDrivenPropertyCheck
     }
   }
 
+  "Repetition" should "match the length of the specified pattern" in {
+    val repetition = Repetition("abc", 5)
+    val abcFiveLength = abcGen.filter(_.length > 5).map(_.take(5))
+
+    forAll(abcFiveLength) { s =>
+      repetition.matches(s) shouldBe true
+    }
+  }
+
+  // TODO test for one char, 5 digits
+  // TODO repetition should be able to use other rules, refactor
+  // something like Repeatable ??
+
   implicit class StringFirstChar(s: String) {
     def firstChar: String = s.head.toString
   }
