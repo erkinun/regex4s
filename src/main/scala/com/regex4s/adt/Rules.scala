@@ -5,44 +5,53 @@ import scala.util.matching.Regex
 sealed trait Rule {
   def pattern: Regex
 }
-case object Wildcard extends Rule {
-  override def pattern: Regex = ".".r
+sealed trait Repeatable extends Rule {
+  def rawPattern: String
+  override def pattern: Regex = rawPattern.r
 }
 
-case object AnyDigit extends Rule {
-  override def pattern: Regex = "\\d".r
+case object Wildcard extends Repeatable {
+  override def rawPattern: String = "."
 }
 
-case object AnyNonDigit extends Rule {
-  override def pattern: Regex = "\\D".r
+case object AnyDigit extends Repeatable {
+  override def rawPattern: String = "\\d"
 }
 
-case class Only(these: String) extends Rule {
-  override def pattern: Regex = s"[$these]".r
+case object AnyNonDigit extends Repeatable {
+  override def rawPattern: String = "\\D"
 }
 
-case class Not(these: String) extends Rule {
-  override def pattern: Regex = s"[^$these]".r
+case class Only(these: String) extends Repeatable {
+  override def rawPattern: String = s"[$these]"
 }
 
-case class RangeMatch(ranges: Range*) extends Rule {
-  override def pattern: Regex = s"[$rangeText]".r
+case class Not(these: String) extends Repeatable {
+  override def rawPattern: String = s"[^$these]"
+}
+
+case class RangeMatch(ranges: Range*) extends Repeatable {
+  override def rawPattern: String = s"[$rangeText]"
   protected def rangeText = ranges.map(r => s"${r.start}-${r.end}").mkString("")
 }
 
-case class NegativeRange(ranges: Range*) extends Rule {
-  override def pattern: Regex = s"[^$rangeText]".r
+case class NegativeRange(ranges: Range*) extends Repeatable {
+  override def rawPattern: String = s"[^$rangeText]"
   protected def rangeText = ranges.map(r => s"${r.start}-${r.end}").mkString("")
 }
-
-case class Repetition(these: String, times: Int) extends Rule {
-  override def pattern: Regex = s"[$these]{$times}".r
+// TODO check if Java regexes support {2-5} repetition rules
+case class Repetition(these: Repeatable, times: Int) extends Rule {
+  override def pattern: Regex = s"${these.rawPattern}{$times}".r
 }
 
 // TODO maybe we can have abnormal range checks?
 // like z -> 5, 2 -> a, b->a
 
 case class Range(start: Char, end: Char)
+
+object Range {
+  def apply(tp: (Char, Char)): Range = new Range(tp._1, tp._2)
+}
 
 object RangeMatch {
   // DummyImplicit is to prevent same types after type erasure
@@ -58,8 +67,4 @@ object NegativeRange {
     val ranges = tps.map(tp => Range(tp))
     NegativeRange(ranges:_*)
   }
-}
-
-object Range {
-  def apply(tp: (Char, Char)): Range = new Range(tp._1, tp._2)
 }
