@@ -97,7 +97,7 @@ class RulesTest extends FlatSpec with Matchers with GeneratorDrivenPropertyCheck
 
   // negative range TODO refactor Not rule
   "NegativeRange" should "match anything except it specifies as range" in {
-    val negRange = NegativeRange(Range('d', 'z'))
+    val negRange = NegativeRange('d' -> 'z')
 
     forAll(abcGen) { abc =>
       negRange.matches(abc) shouldBe true
@@ -112,7 +112,27 @@ class RulesTest extends FlatSpec with Matchers with GeneratorDrivenPropertyCheck
     }
   }
 
-  // TODO negative multiple range test
+  it should "not match over multiple ranges" in {
+    val multiNegRange = NegativeRange('a' -> 'c', '0' -> '9')
+    val abcOrNum = Gen.oneOf(abcGen, Gen.numStr)
+
+    forAll(abcOrNum) { s =>
+      multiNegRange.matches(s) shouldBe false
+    }
+  }
+
+  "Repetition" should "match the length of the specified pattern" in {
+    val repetition = Repetition("abc", 5)
+    val abcFiveLength = abcGen.filter(_.length > 5).map(_.take(5))
+
+    forAll(abcFiveLength) { s =>
+      repetition.matches(s) shouldBe true
+    }
+  }
+
+  // TODO test for one char, 5 digits
+  // TODO repetition should be able to use other rules, refactor
+  // something like Repeatable ??
 
   implicit class StringFirstChar(s: String) {
     def firstChar: String = s.head.toString

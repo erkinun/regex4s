@@ -25,9 +25,6 @@ case class Not(these: String) extends Rule {
   override def pattern: Regex = s"[^$these]".r
 }
 
-// TODO Ranges should go to their own module
-case class Range(start: Char, end: Char)
-
 case class RangeMatch(ranges: Range*) extends Rule {
   override def pattern: Regex = s"[$rangeText]".r
   protected def rangeText = ranges.map(r => s"${r.start}-${r.end}").mkString("")
@@ -38,8 +35,15 @@ case class NegativeRange(ranges: Range*) extends Rule {
   protected def rangeText = ranges.map(r => s"${r.start}-${r.end}").mkString("")
 }
 
+case class Repetition(these: String, times: Int) extends Rule {
+  override def pattern: Regex = s"[$these]{$times}".r
+}
+
 // TODO maybe we can have abnormal range checks?
 // like z -> 5, 2 -> a, b->a
+
+case class Range(start: Char, end: Char)
+
 object RangeMatch {
   // DummyImplicit is to prevent same types after type erasure
   def apply(tps: (Char, Char)*)(implicit d: DummyImplicit): RangeMatch = {
