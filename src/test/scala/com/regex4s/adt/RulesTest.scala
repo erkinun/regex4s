@@ -10,6 +10,10 @@ class RulesTest extends FlatSpec with Matchers with GeneratorDrivenPropertyCheck
     .flatMap(_.mkString(""))
     .filter(_.nonEmpty)
 
+  private val notAbcChar: Gen[Char] = Gen.alphaChar
+    .filter(c => c != 'a' && c != 'b' && c != 'c')
+  private val notAbc = Gen.listOfN(3, notAbcChar).flatMap(_.mkString(""))
+
   "Wildcard pattern" should "match any arbitrary characters" in {
     forAll(Gen.alphaNumStr.filter(_.nonEmpty)) { aStr: String =>
       Wildcard.matches(aStr) shouldBe true
@@ -53,8 +57,7 @@ class RulesTest extends FlatSpec with Matchers with GeneratorDrivenPropertyCheck
 
   it should "match other characters" in {
     val notAbc = Not("abc")
-    val notAbcGen = Gen.alphaChar
-      .filter(c => c != 'a' && c != 'b' && c != 'c').map(_.toString)
+    val notAbcGen = notAbcChar.map(_.toString)
       .filter(_.nonEmpty)
 
     forAll(notAbcGen) { abcExcluded: String =>
@@ -142,7 +145,26 @@ class RulesTest extends FlatSpec with Matchers with GeneratorDrivenPropertyCheck
     forAll(abcThree) { s => repetition.matches(s) shouldBe true }
   }
 
-  // TODO add more test cases for other repeatables with Repetition
+  it should "match wildcard n times" in {
+    val repetition = Repetition(Wildcard, 3)
+    forAll(Gen.alphaStr.filter(_.length > 3)) { s => repetition.matches(s) shouldBe true }
+  }
+
+  it should "match non digits n times" in {
+    val repetition = Repetition(AnyNonDigit, 3)
+    forAll(Gen.alphaStr.filter(_.length > 3)) { s => repetition.matches(s) shouldBe true }
+  }
+
+  it should "match not pattern n times" in {
+    val repetition = Repetition(Not("abc"), 3)
+    forAll(notAbc) { s => repetition.matches(s) shouldBe true }
+  }
+
+  // negative range repeatable
+  it should "match negative range n times" in {
+    val repetition = Repetition(NegativeRange('a' -> 'c'), 3)
+    forAll(notAbc) { s => repetition.matches(s) shouldBe true }
+  }
 
   it should "match n any non digits" in {
     val repetition = Repetition(AnyNonDigit, 3)

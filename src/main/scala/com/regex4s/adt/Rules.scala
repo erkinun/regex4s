@@ -40,6 +40,7 @@ case class NegativeRange(ranges: Range*) extends Repeatable {
   protected def rangeText = ranges.map(r => s"${r.start}-${r.end}").mkString("")
 }
 // TODO check if Java regexes support {2-5} repetition rules
+// TODO check if this should be renamed as Repeat
 case class Repetition(these: Repeatable, times: Int) extends Rule {
   override def pattern: Regex = s"${these.rawPattern}{$times}".r
 }
