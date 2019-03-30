@@ -186,6 +186,22 @@ class RulesTest extends FlatSpec with Matchers with GeneratorDrivenPropertyCheck
     repeat.matches(wazup) shouldBe false
   }
 
+  // TODO do we have to test with each repeatable in these cases?
+  "KleeneStar" should "match the pattern zero or more times" in {
+    val zeroOrMore = ZeroOrMore(Only("abc"))
+    forAll(abcGen) { s => zeroOrMore.matches(s) shouldBe true }
+  }
+
+  "KleenePlus" should "match the pattern at least once or more" in {
+    val onceOrMore = OnceOrMore(Only("abc"))
+    forAll(abcGen) { s => onceOrMore.matches(s) shouldBe true }
+  }
+
+  it should "not match if the pattern does not match at all" in {
+    val onceOrMore = OnceOrMore(Only("abc"))
+    forAll(notAbc) { s => onceOrMore.matches(s) shouldBe false }
+  }
+
   implicit class StringFirstChar(s: String) {
     def firstChar: String = s.head.toString
   }

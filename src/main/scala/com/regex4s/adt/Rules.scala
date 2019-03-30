@@ -53,11 +53,18 @@ case class Repeat(these: Repeatable, times: Times) extends Rule {
   }
 }
 
+case class ZeroOrMore(these: Repeatable) extends Rule {
+  override def pattern: Regex = s"${these.rawPattern}*".r
+}
+
+case class OnceOrMore(these: Repeatable) extends Rule {
+  override def pattern: Regex = s"${these.rawPattern}+".r
+}
+
 // TODO maybe we can have abnormal range checks?
 // like z -> 5, 2 -> a, b->a
 
 case class Range(start: Char, end: Char)
-
 object Range {
   def apply(tp: (Char, Char)): Range = new Range(tp._1, tp._2)
 }
