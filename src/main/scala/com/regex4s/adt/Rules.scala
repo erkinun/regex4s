@@ -39,10 +39,18 @@ case class NegativeRange(ranges: Range*) extends Repeatable {
   override def rawPattern: String = s"[^$rangeText]"
   protected def rangeText = ranges.map(r => s"${r.start}-${r.end}").mkString("")
 }
-// TODO check if Java regexes support {2-5} repetition rules
-// TODO check if this should be renamed as Repeat
-case class Repeat(these: Repeatable, times: Int) extends Rule {
-  override def pattern: Regex = s"${these.rawPattern}{$times}".r
+sealed trait Times
+case class Exactly(times: Int) extends Times
+case class Between(from: Int, to: Int) extends Times
+
+case class Repeat(these: Repeatable, times: Times) extends Rule {
+  override def pattern: Regex = {
+    val repeatTimes = times match {
+      case Exactly(t) => s"{$t}"
+      case Between(f, t) => s"{$f,$t}"
+    }
+    s"${these.rawPattern}$repeatTimes".r
+  }
 }
 
 // TODO maybe we can have abnormal range checks?
