@@ -125,14 +125,14 @@ class RulesTest extends FlatSpec with Matchers with GeneratorDrivenPropertyCheck
   }
 
   "Repetition" should "match the length of the specified pattern" in {
-    val repetition = Repetition(Only("abc"), 5)
+    val repetition = Repeat(Only("abc"), 5)
     val abcFiveLength = abcGen.filter(_.length > 5).map(_.take(5))
 
     forAll(abcFiveLength) { s => repetition.matches(s) shouldBe true }
   }
 
   it should "match n digits in a string" in {
-    val repetition = Repetition(AnyDigit, 3)
+    val repetition = Repeat(AnyDigit, 3)
     val threeDigits = Gen.numStr.filter(_.nonEmpty).filter(_.length > 3)
 
     forAll(threeDigits) { d => repetition.matches(d) shouldBe true }
@@ -140,34 +140,33 @@ class RulesTest extends FlatSpec with Matchers with GeneratorDrivenPropertyCheck
 
   it should "match a range of characters multiple times" in {
     val abcThree = abcGen.filter(_.length > 3).map(_.take(3))
-    val repetition = Repetition(RangeMatch('a' -> 'c'), 3)
+    val repetition = Repeat(RangeMatch('a' -> 'c'), 3)
 
     forAll(abcThree) { s => repetition.matches(s) shouldBe true }
   }
 
   it should "match wildcard n times" in {
-    val repetition = Repetition(Wildcard, 3)
+    val repetition = Repeat(Wildcard, 3)
     forAll(Gen.alphaStr.filter(_.length > 3)) { s => repetition.matches(s) shouldBe true }
   }
 
   it should "match non digits n times" in {
-    val repetition = Repetition(AnyNonDigit, 3)
+    val repetition = Repeat(AnyNonDigit, 3)
     forAll(Gen.alphaStr.filter(_.length > 3)) { s => repetition.matches(s) shouldBe true }
   }
 
   it should "match not pattern n times" in {
-    val repetition = Repetition(Not("abc"), 3)
+    val repetition = Repeat(Not("abc"), 3)
     forAll(notAbc) { s => repetition.matches(s) shouldBe true }
   }
 
-  // negative range repeatable
   it should "match negative range n times" in {
-    val repetition = Repetition(NegativeRange('a' -> 'c'), 3)
+    val repetition = Repeat(NegativeRange('a' -> 'c'), 3)
     forAll(notAbc) { s => repetition.matches(s) shouldBe true }
   }
 
   it should "match n any non digits" in {
-    val repetition = Repetition(AnyNonDigit, 3)
+    val repetition = Repeat(AnyNonDigit, 3)
     val threeDigits = Gen.alphaStr.filter(_.nonEmpty).filter(_.length > 3)
 
     forAll(threeDigits) { d => repetition.matches(d) shouldBe true }
