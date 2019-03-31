@@ -221,6 +221,18 @@ class RulesTest extends FlatSpec with Matchers with GeneratorDrivenPropertyCheck
     forAll(notAbc) { s => optional.matches(s) shouldBe true }
   }
 
+  "Start" should "match at the start of a string" in {
+    val startingTripleAs = Start(Repeat(Only("a"), Exactly(3)))
+    val sentence = "aaa! what are you doing?"
+    startingTripleAs.matches(sentence) shouldBe true
+  }
+
+  it should "not match if the pattern is not at the start" in {
+    val startingTripleAs = Start(Repeat(Only("a"), Exactly(3)))
+    val sentence = "what are you doing? aaa!"
+    startingTripleAs.matches(sentence) shouldBe false
+  }
+
   implicit class StringFirstChar(s: String) {
     def firstChar: String = s.head.toString
   }

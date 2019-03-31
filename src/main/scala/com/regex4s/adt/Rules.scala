@@ -3,12 +3,10 @@ package com.regex4s.adt
 import scala.util.matching.Regex
 
 sealed trait Rule {
-  def pattern: Regex
-}
-sealed trait Repeatable extends Rule {
   def rawPattern: String
-  override def pattern: Regex = rawPattern.r
+  def pattern: Regex = rawPattern.r
 }
+sealed trait Repeatable extends Rule
 
 case object Wildcard extends Repeatable {
   override def rawPattern: String = "."
@@ -48,28 +46,30 @@ case class Exactly(times: Int) extends Times
 case class Between(from: Int, to: Int) extends Times
 
 case class Repeat(these: Repeatable, times: Times) extends Rule {
-  override def pattern: Regex = {
+  override def rawPattern: String = {
     val repeatTimes = times match {
       case Exactly(t) => s"{$t}"
       case Between(f, t) => s"{$f,$t}"
     }
-    s"${these.rawPattern}$repeatTimes".r
+    s"${these.rawPattern}$repeatTimes"
   }
 }
 
 case class ZeroOrMore(rule: Repeatable) extends Rule {
-  override def pattern: Regex = s"${rule.rawPattern}*".r
+  override def rawPattern: String = s"${rule.rawPattern}*"
 }
 
 case class OnceOrMore(rule: Repeatable) extends Rule {
-  override def pattern: Regex = s"${rule.rawPattern}+".r
+  override def rawPattern: String = s"${rule.rawPattern}+"
 }
 
-// TODO optional (or zero or one) character
 case class Optional(rule: Repeatable) extends Rule {
-  override def pattern: Regex = s"${rule.rawPattern}?".r
+  override def rawPattern: String = s"${rule.rawPattern}?"
 }
 
+case class Start(rule: Rule) extends Rule {
+  override def rawPattern: String = s"^${rule.rawPattern}"
+}
 // TODO maybe we can have abnormal range checks?
 // like z -> 5, 2 -> a, b->a
 
