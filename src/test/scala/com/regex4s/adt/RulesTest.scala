@@ -233,6 +233,18 @@ class RulesTest extends FlatSpec with Matchers with GeneratorDrivenPropertyCheck
     startingTripleAs.matches(sentence) shouldBe false
   }
 
+  "End" should "match only at the end of the string" in {
+    val endScreaming = End(Repeat(Only("a"), Between(2, 4)))
+    val sentence = "what are you doing? !aaa"
+    endScreaming.matches(sentence) shouldBe true
+  }
+
+  it should "not match if the pattern is not at the end" in {
+    val endScreaming = End(Repeat(Only("a"), Between(2, 4)))
+    val sentence = "what are you doing? aaa!"
+    endScreaming.matches(sentence) shouldBe false
+  }
+
   implicit class StringFirstChar(s: String) {
     def firstChar: String = s.head.toString
   }

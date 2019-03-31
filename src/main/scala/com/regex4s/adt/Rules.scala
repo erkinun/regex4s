@@ -70,10 +70,16 @@ case class Optional(rule: Repeatable) extends Rule {
 case class Start(rule: Rule) extends Rule {
   override def rawPattern: String = s"^${rule.rawPattern}"
 }
+
+case class End(rule: Rule) extends Rule {
+  override def rawPattern: String = s"${rule.rawPattern}$$"
+}
+
 // TODO maybe we can have abnormal range checks?
 // like z -> 5, 2 -> a, b->a
 
 // TODO think about compound regexes like phone numbers emails etc
+// TODO In order to do this, we need to have a builder dsl to link things together
 
 case class Range(start: Char, end: Char)
 object Range {
