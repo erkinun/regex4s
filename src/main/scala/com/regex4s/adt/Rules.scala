@@ -22,6 +22,10 @@ case object AnyNonDigit extends Repeatable {
   override def rawPattern: String = "\\D"
 }
 
+case object Whitespace extends Repeatable {
+  override def rawPattern: String = "\\s"
+}
+
 case class Only(these: String) extends Repeatable {
   override def rawPattern: String = s"[$these]"
 }

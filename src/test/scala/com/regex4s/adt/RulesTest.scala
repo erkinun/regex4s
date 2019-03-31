@@ -33,6 +33,15 @@ class RulesTest extends FlatSpec with Matchers with GeneratorDrivenPropertyCheck
     }
   }
 
+  "Whitespace" should "match any kind of space, tab, newline" in {
+    val whitespaceGen = Gen.oneOf('\n', '\t', ' ', '\r').map(_.toString)
+    forAll(whitespaceGen) { s => Whitespace.matches(s) shouldBe true }
+  }
+
+  it should "not match if there are no whitespace in a test" in {
+    forAll(Gen.alphaStr) { s => Whitespace.matches(s) shouldBe false }
+  }
+
   // TODO think about escaping chars in the string cases
   // or other cases that might fail
   "Only" should "match only the characters it has" in {
