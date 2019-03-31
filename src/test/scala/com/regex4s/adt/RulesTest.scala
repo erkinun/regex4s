@@ -202,6 +202,16 @@ class RulesTest extends FlatSpec with Matchers with GeneratorDrivenPropertyCheck
     forAll(notAbc) { s => onceOrMore.matches(s) shouldBe false }
   }
 
+  "Optional" should "match the pattern" in {
+    val optional = Optional(Only("abc"))
+    forAll(abcGen) { s => optional.matches(s) shouldBe true }
+  }
+
+  it should "match even if the pattern is missing" in {
+    val optional = Optional(Only("abc"))
+    forAll(notAbc) { s => optional.matches(s) shouldBe true }
+  }
+
   implicit class StringFirstChar(s: String) {
     def firstChar: String = s.head.toString
   }

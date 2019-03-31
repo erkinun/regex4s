@@ -53,16 +53,23 @@ case class Repeat(these: Repeatable, times: Times) extends Rule {
   }
 }
 
-case class ZeroOrMore(these: Repeatable) extends Rule {
-  override def pattern: Regex = s"${these.rawPattern}*".r
+case class ZeroOrMore(rule: Repeatable) extends Rule {
+  override def pattern: Regex = s"${rule.rawPattern}*".r
 }
 
-case class OnceOrMore(these: Repeatable) extends Rule {
-  override def pattern: Regex = s"${these.rawPattern}+".r
+case class OnceOrMore(rule: Repeatable) extends Rule {
+  override def pattern: Regex = s"${rule.rawPattern}+".r
+}
+
+// TODO optional (or zero or one) character
+case class Optional(rule: Repeatable) extends Rule {
+  override def pattern: Regex = s"${rule.rawPattern}?".r
 }
 
 // TODO maybe we can have abnormal range checks?
 // like z -> 5, 2 -> a, b->a
+
+// TODO think about compound regexes like phone numbers emails etc
 
 case class Range(start: Char, end: Char)
 object Range {
