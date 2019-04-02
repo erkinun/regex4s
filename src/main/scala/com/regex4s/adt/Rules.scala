@@ -28,12 +28,12 @@ case class Only(these: String) extends Repeatable {
   override def rawPattern: String = s"[$these]"
 }
 
-case class Sequence(these: String) extends Rule {
-  override def rawPattern: String = these
-}
-
 case class Not(these: String) extends Repeatable {
   override def rawPattern: String = s"[^$these]"
+}
+
+case class Sequence(these: String) extends Rule {
+  override def rawPattern: String = these
 }
 
 case class RangeMatch(ranges: Range*) extends Repeatable {
@@ -84,6 +84,12 @@ case class End(rule: Rule) extends Rule {
 
 // TODO think about compound regexes like phone numbers emails etc
 // TODO In order to do this, we need to have a builder dsl to link things together
+// TODO to make it easier maybe
+case class Combined(rules: Rule*) extends Rule {
+  override def rawPattern: String = rules.map(_.rawPattern).mkString("")
+}
+
+// TODO can we provide a difference operator if the match is not a success?
 
 case class Range(start: Char, end: Char)
 object Range {
