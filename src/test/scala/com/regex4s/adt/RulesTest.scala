@@ -57,6 +57,16 @@ class RulesTest extends FlatSpec with Matchers with GeneratorDrivenPropertyCheck
     onlyAbc.matches("other") shouldBe false
   }
 
+  "Sequence" should "match only the string it has" in {
+    val seq = Sequence("abc")
+    seq.matches("abc and some other stuff") shouldBe true
+  }
+
+  it should "not match sequences which does not have the pattern" in {
+    val seq = Sequence("abc")
+    seq.matches("def and some other stuff") shouldBe false
+  }
+
   "Not" should "not match characters other than it specifies" in {
     val notAbc = Not("abc")
     forAll(abcGen) { abc: String =>

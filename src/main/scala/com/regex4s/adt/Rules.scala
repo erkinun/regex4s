@@ -28,6 +28,10 @@ case class Only(these: String) extends Repeatable {
   override def rawPattern: String = s"[$these]"
 }
 
+case class Sequence(these: String) extends Rule {
+  override def rawPattern: String = these
+}
+
 case class Not(these: String) extends Repeatable {
   override def rawPattern: String = s"[^$these]"
 }
