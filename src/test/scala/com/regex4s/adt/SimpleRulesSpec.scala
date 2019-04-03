@@ -78,4 +78,54 @@ class SimpleRulesSpec extends FlatSpec with Matchers with GeneratorDrivenPropert
       notAbc.matches(abcExcluded) shouldBe true
     }
   }
+
+  // TODO do we have to test with each repeatable in these cases?
+  "KleeneStar" should "match the pattern zero or more times" in {
+    val zeroOrMore = ZeroOrMore(Only("abc"))
+    forAll(abcGen) { s => zeroOrMore.matches(s) shouldBe true }
+  }
+
+  "KleenePlus" should "match the pattern at least once or more" in {
+    val onceOrMore = OnceOrMore(Only("abc"))
+    forAll(abcGen) { s => onceOrMore.matches(s) shouldBe true }
+  }
+
+  it should "not match if the pattern does not match at all" in {
+    val onceOrMore = OnceOrMore(Only("abc"))
+    forAll(notAbc) { s => onceOrMore.matches(s) shouldBe false }
+  }
+
+  "Optional" should "match the pattern" in {
+    val optional = Optional(Only("abc"))
+    forAll(abcGen) { s => optional.matches(s) shouldBe true }
+  }
+
+  it should "match even if the pattern is missing" in {
+    val optional = Optional(Only("abc"))
+    forAll(notAbc) { s => optional.matches(s) shouldBe true }
+  }
+
+  "Start" should "match at the start of a string" in {
+    val startingTripleAs = Start(Repeat(Only("a"), Exactly(3)))
+    val sentence = "aaa! what are you doing?"
+    startingTripleAs.matches(sentence) shouldBe true
+  }
+
+  it should "not match if the pattern is not at the start" in {
+    val startingTripleAs = Start(Repeat(Only("a"), Exactly(3)))
+    val sentence = "what are you doing? aaa!"
+    startingTripleAs.matches(sentence) shouldBe false
+  }
+
+  "End" should "match only at the end of the string" in {
+    val endScreaming = End(Repeat(Only("a"), Between(2, 4)))
+    val sentence = "what are you doing? !aaa"
+    endScreaming.matches(sentence) shouldBe true
+  }
+
+  it should "not match if the pattern is not at the end" in {
+    val endScreaming = End(Repeat(Only("a"), Between(2, 4)))
+    val sentence = "what are you doing? aaa!"
+    endScreaming.matches(sentence) shouldBe false
+  }
 }

@@ -22,26 +22,6 @@ case class Repeat(these: Repeatable, times: Times) extends Rule {
   }
 }
 
-case class ZeroOrMore(rule: Repeatable) extends Rule {
-  override def rawPattern: String = s"${rule.rawPattern}*"
-}
-
-case class OnceOrMore(rule: Repeatable) extends Rule {
-  override def rawPattern: String = s"${rule.rawPattern}+"
-}
-
-case class Optional(rule: Repeatable) extends Rule {
-  override def rawPattern: String = s"${rule.rawPattern}?"
-}
-
-case class Start(rule: Rule) extends Rule {
-  override def rawPattern: String = s"^${rule.rawPattern}"
-}
-
-case class End(rule: Rule) extends Rule {
-  override def rawPattern: String = s"${rule.rawPattern}$$"
-}
-
 // TODO maybe we can have abnormal range checks?
 // like z -> 5, 2 -> a, b->a
 
