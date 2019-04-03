@@ -8,17 +8,6 @@ trait Rule {
 }
 trait Repeatable extends Rule
 
-
-
-case class RangeMatch(ranges: Range*) extends Repeatable {
-  override def rawPattern: String = s"[$rangeText]"
-  protected def rangeText = ranges.map(r => s"${r.start}-${r.end}").mkString("")
-}
-
-case class NegativeRange(ranges: Range*) extends Repeatable {
-  override def rawPattern: String = s"[^$rangeText]"
-  protected def rangeText = ranges.map(r => s"${r.start}-${r.end}").mkString("")
-}
 sealed trait Times
 case class Exactly(times: Int) extends Times
 case class Between(from: Int, to: Int) extends Times
@@ -64,24 +53,3 @@ case class Combined(rules: Rule*) extends Rule {
 }
 
 // TODO can we provide a difference operator if the match is not a success?
-
-case class Range(start: Char, end: Char)
-object Range {
-  def apply(tp: (Char, Char)): Range = new Range(tp._1, tp._2)
-}
-
-object RangeMatch {
-  // DummyImplicit is to prevent same types after type erasure
-  def apply(tps: (Char, Char)*)(implicit d: DummyImplicit): RangeMatch = {
-    val ranges = tps.map(tp => Range(tp))
-    RangeMatch(ranges:_*)
-  }
-}
-
-object NegativeRange {
-  // DummyImplicit is to prevent same types after type erasure
-  def apply(tps: (Char, Char)*)(implicit d: DummyImplicit): NegativeRange = {
-    val ranges = tps.map(tp => Range(tp))
-    NegativeRange(ranges:_*)
-  }
-}
