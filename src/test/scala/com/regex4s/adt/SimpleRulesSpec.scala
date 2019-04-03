@@ -4,10 +4,8 @@ import com.regex4s.adt.SimpleRules._
 import com.regex4s.adt.Generators.{abcGen, notAbc, notAbcChar}
 import com.regex4s.adt.Implicits._
 import org.scalacheck.Gen
-import org.scalatest.{FlatSpec, Matchers}
-import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
-class SimpleRulesSpec extends FlatSpec with Matchers with GeneratorDrivenPropertyChecks  {
+class SimpleRulesSpec extends RegexSpec {
 
   "Wildcard pattern" should "match any arbitrary characters" in {
     forAll(Gen.alphaNumStr.filter(_.nonEmpty)) { aStr: String =>

@@ -4,10 +4,8 @@ import com.regex4s.adt.Implicits._
 import com.regex4s.adt.Generators._
 import com.regex4s.adt.Ranges.{NegativeRange, RangeMatch}
 import org.scalacheck.Gen
-import org.scalatest.{FlatSpec, Matchers}
-import org.scalatest.prop.GeneratorDrivenPropertyChecks
 
-class RangesSpec extends FlatSpec with Matchers with GeneratorDrivenPropertyChecks {
+class RangesSpec extends RegexSpec {
   "RangeMatch" should "match a range of characters" in {
     val rangeMatch = RangeMatch('a' -> 'z')
 
