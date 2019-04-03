@@ -1,5 +1,8 @@
 package com.regex4s.adt
 
+// TODO maybe we can have abnormal range checks?
+// like z -> 5, 2 -> a, b->a
+
 object Ranges {
   case class RangeMatch(ranges: Range*) extends Repeatable {
     override def rawPattern: String = s"[$rangeText]"
