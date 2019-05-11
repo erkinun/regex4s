@@ -2,7 +2,7 @@ package com.regex4s.adt
 
 import com.regex4s.adt.Implicits._
 import com.regex4s.adt.Generators._
-import com.regex4s.adt.Ranges.{NegativeRange, RangeMatch}
+import com.regex4s.adt.Ranges.{RangeExclude, RangeMatch}
 import com.regex4s.adt.SimpleRules._
 import org.scalacheck.Gen
 
@@ -44,7 +44,7 @@ class RepeatableSpec extends RegexSpec {
   }
 
   it should "match negative range n times" in {
-    val repeat = Repeat(NegativeRange('a' -> 'c'), Exactly(3))
+    val repeat = Repeat(RangeExclude('a' -> 'c'), Exactly(3))
     forAll(notAbc) { s => repeat.matches(s) shouldBe true }
   }
 

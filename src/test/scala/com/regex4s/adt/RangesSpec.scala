@@ -2,7 +2,7 @@ package com.regex4s.adt
 
 import com.regex4s.adt.Implicits._
 import com.regex4s.adt.Generators._
-import com.regex4s.adt.Ranges.{NegativeRange, RangeMatch}
+import com.regex4s.adt.Ranges.{RangeExclude, RangeMatch}
 import org.scalacheck.Gen
 
 class RangesSpec extends RegexSpec {
@@ -39,9 +39,8 @@ class RangesSpec extends RegexSpec {
     }
   }
 
-  // negative range TODO refactor Not rule
   "NegativeRange" should "match anything except it specifies as range" in {
-    val negRange = NegativeRange('d' -> 'z')
+    val negRange = RangeExclude('d' -> 'z')
 
     forAll(abcGen) { abc =>
       negRange.matches(abc) shouldBe true
@@ -49,7 +48,7 @@ class RangesSpec extends RegexSpec {
   }
 
   it should "not match a pattern it specifies" in {
-    val negRange = NegativeRange('a' -> 'c')
+    val negRange = RangeExclude('a' -> 'c')
 
     forAll(abcGen) { abc =>
       negRange.matches(abc) shouldBe false
@@ -57,7 +56,7 @@ class RangesSpec extends RegexSpec {
   }
 
   it should "not match over multiple ranges" in {
-    val multiNegRange = NegativeRange('a' -> 'c', '0' -> '9')
+    val multiNegRange = RangeExclude('a' -> 'c', '0' -> '9')
     val abcOrNum = Gen.oneOf(abcGen, Gen.numStr)
 
     forAll(abcOrNum) { s =>
