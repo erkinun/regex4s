@@ -22,8 +22,7 @@ class GroupSpec extends RegexSpec {
 
     sample match {
       case file(name) => name shouldBe "img35.png"
-      case _ =>
-        throw new Exception("pattern should have matched the text")
+      case _ => throw new Exception("pattern should have matched the text")
     }
   }
 }
