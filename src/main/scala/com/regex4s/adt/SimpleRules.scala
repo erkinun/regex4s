@@ -1,8 +1,13 @@
 package com.regex4s.adt
 
 object SimpleRules {
+  // TODO some of these case objects could be converted to vals
   case object Wildcard extends Repeatable {
     override def rawPattern: String = "."
+  }
+
+  case object Dot extends Repeatable {
+    override def rawPattern: String = "\\."
   }
 
   case object AnyDigit extends Repeatable {
@@ -15,6 +20,14 @@ object SimpleRules {
 
   case object Whitespace extends Repeatable {
     override def rawPattern: String = "\\s"
+  }
+
+  case object NonWhitespace extends Repeatable {
+    override def rawPattern: String = "\\S"
+  }
+
+  case object AnyWordCharacter extends Repeatable {
+    override def rawPattern: String = "\\w"
   }
 
   case class Only(these: String) extends Repeatable {

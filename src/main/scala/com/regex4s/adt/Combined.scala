@@ -1,6 +1,6 @@
 package com.regex4s.adt
 
-import com.regex4s.adt.SimpleRules.{End, Sequence, Start}
+import com.regex4s.adt.SimpleRules._
 
 // TODO think about compound regexes like phone numbers emails etc
 // TODO In order to do this, we need to have a builder dsl to link things together
@@ -16,6 +16,17 @@ object Combined {
       prefix,
       Sequence("\\."),
       fileType
+    ))
+    override def rawPattern: String = rule.rawPattern
+  }
+
+  case object SimpleEmail extends Rule {
+    val rule = Group(Combined(
+      OnceOrMore(NonWhitespace),
+      Sequence("@"),
+      OnceOrMore(AnyWordCharacter),
+      Dot,
+      Or(Sequence("com"), Sequence("net"))
     ))
     override def rawPattern: String = rule.rawPattern
   }
