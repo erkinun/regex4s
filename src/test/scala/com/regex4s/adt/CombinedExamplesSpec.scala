@@ -1,6 +1,6 @@
 package com.regex4s.adt
 
-import com.regex4s.adt.Combined.{Decimals, ImageFile, SimpleEmail}
+import com.regex4s.adt.Combined.{Decimals, File, SimpleEmail}
 import com.regex4s.adt.Implicits._
 import com.regex4s.adt.SimpleRules.{AnyDigit, Sequence, ZeroOrMore}
 import org.scalatest.{Matchers, WordSpec}
@@ -8,8 +8,8 @@ import org.scalatest.{Matchers, WordSpec}
 class CombinedExamplesSpec extends WordSpec with Matchers {
 
   "Examples" when {
-    "ImageFile" should {
-      val imageFileR = ImageFile(
+    "File" should {
+      val imageFileR = File(
         prefix = Combined(
           Sequence("img"),
           ZeroOrMore(AnyDigit)

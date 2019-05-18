@@ -11,7 +11,7 @@ case class Combined(rules: Rule*) extends Rule {
 }
 
 object Combined {
-  case class ImageFile(prefix: Rule, fileType: Rule) extends Rule {
+  case class File(prefix: Rule, fileType: Rule) extends Rule {
     val rule = Group(Combined(
       prefix,
       Sequence("\\."),
