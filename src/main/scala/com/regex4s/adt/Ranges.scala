@@ -6,11 +6,11 @@ import com.regex4s.adt.SimpleRules.Not
 // like z -> 5, 2 -> a, b->a
 
 object Ranges {
-  case class RangeMatch(ranges: Range*) extends Repeatable {
+  case class RangeMatch(ranges: Range*) extends Rule {
     override def rawPattern: String = s"[${RangeMatch.rangeText(ranges)}]"
   }
 
-  case class RangeExclude(ranges: Range*) extends Repeatable {
+  case class RangeExclude(ranges: Range*) extends Rule {
     override def rawPattern: String = Not(RangeMatch.rangeText(ranges)).rawPattern
   }
 
