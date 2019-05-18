@@ -30,6 +30,10 @@ object SimpleRules {
     override def rawPattern: String = "\\w"
   }
 
+  case object NonWordCharacter extends Repeatable {
+    override def rawPattern: String = "\\W"
+  }
+
   case class Only(these: String) extends Repeatable {
     override def rawPattern: String = s"[$these]"
   }
