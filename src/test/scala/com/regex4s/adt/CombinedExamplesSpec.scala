@@ -1,6 +1,7 @@
 package com.regex4s.adt
 
 import com.regex4s.adt.Combined.{Decimals, ImageFile, SimpleEmail}
+import com.regex4s.adt.Implicits._
 import com.regex4s.adt.SimpleRules.{AnyDigit, Sequence, ZeroOrMore}
 import org.scalatest.{Matchers, WordSpec}
 
@@ -55,6 +56,14 @@ class CombinedExamplesSpec extends WordSpec with Matchers {
       "produce the expected raw regex string" in {
         val expected = """(-?\d+(,\d+)*\.?\de?\d*)"""
         decimal.rawPattern shouldBe expected
+      }
+
+      "match the different numbers" in {
+        decimal.matches("3.14529") shouldBe true
+        decimal.matches("-255.34") shouldBe true
+        decimal.matches("128") shouldBe true
+        decimal.matches("1.9e10") shouldBe true
+        decimal.matches("123,340.00") shouldBe true
       }
     }
   }
