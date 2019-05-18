@@ -1,6 +1,6 @@
 package com.regex4s.adt
 
-import com.regex4s.adt.Combined.{ImageFile, SimpleEmail}
+import com.regex4s.adt.Combined.{Decimals, ImageFile, SimpleEmail}
 import com.regex4s.adt.SimpleRules.{AnyDigit, Sequence, ZeroOrMore}
 import org.scalatest.{Matchers, WordSpec}
 
@@ -46,6 +46,15 @@ class CombinedExamplesSpec extends WordSpec with Matchers {
           case fetcher(foundEmail, _) => foundEmail shouldBe "foobar@hotmail.com"
           case _ => throw new Exception("pattern should have match the mail in text")
         }
+      }
+    }
+
+    "Decimals" should {
+      val decimal = Decimals
+
+      "produce the expected raw regex string" in {
+        val expected = """(-?\d+(,\d+)*\.?\de?\d*)"""
+        decimal.rawPattern shouldBe expected
       }
     }
   }

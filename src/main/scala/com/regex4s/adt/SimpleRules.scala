@@ -46,7 +46,7 @@ object SimpleRules {
     override def rawPattern: String = these
   }
 
-  case class ZeroOrMore(rule: Repeatable) extends Rule {
+  case class ZeroOrMore(rule: Rule) extends Rule {
     override def rawPattern: String = s"${rule.rawPattern}*"
   }
 
@@ -54,7 +54,7 @@ object SimpleRules {
     override def rawPattern: String = s"${rule.rawPattern}+"
   }
 
-  case class Optional(rule: Repeatable) extends Rule {
+  case class Optional(rule: Rule) extends Rule {
     override def rawPattern: String = s"${rule.rawPattern}?"
   }
 

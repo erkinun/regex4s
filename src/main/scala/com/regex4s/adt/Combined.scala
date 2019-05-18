@@ -30,4 +30,21 @@ object Combined {
     ))
     override def rawPattern: String = rule.rawPattern
   }
+
+  case object Decimals extends Rule {
+    val rule = Group(Combined(
+      Optional(Sequence("-")),
+      OnceOrMore(AnyDigit),
+      ZeroOrMore(Group(Combined(
+        Sequence(","),
+        OnceOrMore(AnyDigit)
+      ))),
+      Optional(Dot),
+      AnyDigit,
+      Optional(Sequence("e")),
+      ZeroOrMore(AnyDigit)
+    ))
+
+    override def rawPattern: String = rule.rawPattern
+  }
 }
