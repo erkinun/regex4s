@@ -34,6 +34,7 @@ object SimpleRules {
     override def rawPattern: String = "\\W"
   }
 
+  // TODO create a factory for accepting rule, or just change it to rule
   case class Only(these: String) extends Rule {
     override def rawPattern: String = s"[$these]"
   }

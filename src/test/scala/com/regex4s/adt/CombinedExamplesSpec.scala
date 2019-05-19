@@ -1,5 +1,6 @@
 package com.regex4s.adt
 
+import com.regex4s.adt.Combined.Html.ChildrenMatcher
 import com.regex4s.adt.Combined.{Decimals, File, SimpleEmail}
 import com.regex4s.adt.Implicits._
 import com.regex4s.adt.SimpleRules.{AnyDigit, Sequence, ZeroOrMore}
@@ -64,6 +65,13 @@ class CombinedExamplesSpec extends WordSpec with Matchers {
         decimal.matches("128") shouldBe true
         decimal.matches("1.9e10") shouldBe true
         decimal.matches("123,340.00") shouldBe true
+      }
+    }
+
+    "Html Children matcher" should {
+      "produce the expected raw regex string" in {
+        val expected = """>([\w\s]*)<"""
+        ChildrenMatcher.rawPattern shouldBe expected
       }
     }
   }

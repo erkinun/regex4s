@@ -47,4 +47,20 @@ object Combined {
 
     override def rawPattern: String = rule.rawPattern
   }
+
+  object Html {
+    // TODO rename it
+    // TODO continue with actual match
+    case object ChildrenMatcher extends Rule {
+      val rule = Combined(
+        Sequence(">"),
+        Group(
+          ZeroOrMore(
+            Only(Combined(
+              AnyWordCharacter,
+              Whitespace).rawPattern))),
+        Sequence("<"))
+      override def rawPattern: String = rule.rawPattern
+    }
+  }
 }
